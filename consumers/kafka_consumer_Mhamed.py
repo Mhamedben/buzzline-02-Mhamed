@@ -1,72 +1,41 @@
-"""
-kafka_consumer_case.py
-
-Consume messages from a Kafka topic and process them.
-"""
-
-#####################################
-# Import Modules
-#####################################
-
-# Import packages from Python Standard Library
 import os
-
-# Import external packages
 from dotenv import load_dotenv
-
-# Import functions from local modules
 from utils.utils_consumer import create_kafka_consumer
 from utils.utils_logger import logger
 
-#####################################
-# Load Environment Variables
-#####################################
-
+# Load environment variables from the .env file
 load_dotenv()
 
-#####################################
-# Getter Functions for .env Variables
-#####################################
-
-
+# Function to get Kafka topic from environment or use default
 def get_kafka_topic() -> str:
-    """Fetch Kafka topic from environment or use default."""
     topic = os.getenv("KAFKA_TOPIC", "unknown_topic")
     logger.info(f"Kafka topic: {topic}")
     return topic
 
-
+# Function to get Kafka consumer group ID from environment or use default
 def get_kafka_consumer_group_id() -> int:
-    """Fetch Kafka consumer group id from environment or use default."""
     group_id: str = os.getenv("KAFKA_CONSUMER_GROUP_ID_JSON", "default_group")
     logger.info(f"Kafka consumer group id: {group_id}")
     return group_id
 
-
-#####################################
-# Define a function to process a single message
-# #####################################
-
-
+# Function to process each message and perform real-time analytics
 def process_message(message: str) -> None:
     """
     Process a single message.
 
-    For now, this function simply logs the message.
-    You can extend it to perform other tasks, like counting words
-    or storing data in a database.
-
-    Args:
-        message (str): The message to process.
+    If the message contains the word "ERROR", an alert will be generated.
     """
     logger.info(f"Processing message: {message}")
 
+    # Real-time analytics: Check for the presence of the word "ERROR"
+    if "ERROR" in message:
+        # If the word "ERROR" is found, log an alert
+        logger.warning(f"ALERT: ERROR detected in message: {message}")
+    else:
+        # Otherwise, just log that the message was processed successfully
+        logger.info(f"Message processed successfully: {message}")
 
-#####################################
-# Define main function for this module
-#####################################
-
-
+# Main function to consume messages from Kafka topic
 def main() -> None:
     """
     Main entry point for the consumer.
@@ -76,16 +45,16 @@ def main() -> None:
     - Processes messages from the Kafka topic.
     """
     logger.info("START consumer.")
-
-    # fetch .env content
+    
+    # Fetch topic and group id from .env file
     topic = get_kafka_topic()
     group_id = get_kafka_consumer_group_id()
     logger.info(f"Consumer: Topic '{topic}' and group '{group_id}'...")
 
-    # Create the Kafka consumer using the helpful utility function.
+    # Create Kafka consumer using the utility function
     consumer = create_kafka_consumer(topic, group_id)
 
-     # Poll and process messages
+    # Poll and process messages
     logger.info(f"Polling messages from topic '{topic}'...")
     try:
         for message in consumer:
@@ -102,11 +71,7 @@ def main() -> None:
 
     logger.info(f"END consumer for topic '{topic}' and group '{group_id}'.")
 
-
-#####################################
-# Conditional Execution
-#####################################
-
+# Entry point for script execution
 if __name__ == "__main__":
     main()
 
