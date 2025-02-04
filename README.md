@@ -21,7 +21,14 @@ Python 3.11 is required.
 In this task, we will download, install, configure, and start a local Kafka service. 
 
 1. Install Windows Subsystem for Linux (Windows machines only)
+wsl --install -d Ubuntu
+After installation, create a username and password for Ubuntu.
 2. Install Kafka Streaming Platform
+Kafka requires Java to run. Install it with the following commands.
+
+sudo apt update
+sudo apt install openjdk-17-jdk
+java --version
 3. Start the Zookeeper service (leave the terminal open).
 4. Start the Kafka service (leave the terminal open).
 
